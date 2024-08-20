@@ -355,11 +355,7 @@ list_of_assembly_instructions.append('// END BOOTSTRAP')
 # Specify the directory containing your files
 directory = '/Users/eric/PycharmProjects/Nand2Tetris/StaticsTest'
 folder = 'StaticsTest'
-
-# Use glob to find all files in the directory
-# For example, this will match all files with any extension
 file_pattern = os.path.join(directory, '*.vm')
-
 file_list = glob.glob(file_pattern)
 
 for file_path in file_list:
