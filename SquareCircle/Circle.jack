@@ -1,0 +1,73 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/09/Square/Square.jack
+
+/** Implements a circle. */
+class Circle {
+
+   field int x, y; // screen location of the circle's center
+   field int radius; // radius of this circle, in pixels
+
+   /** Constructs a new circle with a given location and radius. */
+   constructor Circle new() {
+      return this;
+   }
+
+   /** Disposes this circle. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+   
+      method int ReturnX() {
+	return x;
+   }
+
+  method int ReturnY() {
+	return y;
+   }
+
+   /** Erases previous circle and draws the new the circle on the screen. */
+   method void draw(int Ax, int Ay, int Aradius) {
+      do erase();
+      let x = Ax;
+      let y = Ay;
+      let radius = Aradius;
+      do Screen.setColor(true);
+      do Screen.drawCircle(x, y, radius);
+      return;
+   }
+
+   /** Erases the circle from the screen. */
+   method void erase() {
+      do Screen.setColor(false);
+      do Screen.drawCircle(x, y, radius);
+      return;
+   }
+
+   method void moveLeftUp() {
+        
+	do Screen.drawCircle(x, y, radius);
+
+      return;
+   }
+
+  method void moveRightUp() {
+      do Screen.drawCircle(x, y, radius);
+     
+      return;
+   }
+
+  method void moveRightDown() {
+      do Screen.drawCircle(x, y, radius);
+      
+      return;
+   }
+
+  method void moveLeftDown() {
+      do Screen.drawCircle(x, y, radius);
+      return;
+   }
+}
+ 
