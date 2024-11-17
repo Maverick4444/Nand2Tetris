@@ -1,0 +1,133 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+	
+    static Array ram, freeList;
+    static int blockSize, nextBlock, heap, previousBlock;
+
+
+    /** Initializes the class. */
+    function void init() {
+	let ram = 0;
+	let heap = 2048;
+
+	let blockSize = 0;
+	let nextBlock = 1;
+	
+	let freeList = heap;
+	let freeList[blockSize] = 14334;
+	let freeList[nextBlock] = 0;
+	
+	return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+
+	return ram[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+
+	let ram[address] = value;
+	return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. */
+    function int alloc(int size) { 
+	var Array newBlock;
+	
+	// fits freeList with no leftover
+	if ((size + 2) = freeList[blockSize]){
+		let newBlock = freeList; 
+		let freeList = freeList[nextBlock]; 
+		let newBlock[nextBlock] = -1;
+
+		return (newBlock + 2);
+	}
+	
+	// fits freeList with leftover
+	if ((size + 2) < freeList[blockSize]){ //22 < 14334
+		let freeList[blockSize] = (freeList[blockSize] - (size + 2)); 
+		let newBlock = freeList + freeList[blockSize];  
+		let newBlock[blockSize] = (size + 2);
+		let newBlock[nextBlock] = -1;
+
+		return (newBlock + 2); 
+	}
+
+	// knocks out another segment or fits another segment
+
+	else {
+		let previousBlock = freeList;
+		return Memory.search(freeList[nextBlock], (size + 2));
+
+	}
+	
+    }
+
+    function int search (Array block, int sizePlusTwo){ 
+	var Array newSearchBlock;
+	// knock out entire segment
+
+	if (sizePlusTwo = block[blockSize]){
+		// previous block is freeList
+		
+		if (previousBlock = freeList) {
+			let freeList[nextBlock] = block[nextBlock];
+			let block[nextBlock] = -1;
+
+			return (block + 2);
+		}
+
+		// previous block is not freeList
+
+		else {
+			let previousBlock[nextBlock] = block[nextBlock];
+			let block[nextBlock] = -1;
+			
+			return (block + 2);
+		}
+	}
+	// fits another segment
+
+	if (sizePlusTwo < block[blockSize]){ //8000 < large number
+		let block[blockSize] = block[blockSize] - sizePlusTwo; //5803
+		let newSearchBlock = block + block[blockSize]; 
+		let newSearchBlock[blockSize] = sizePlusTwo; 
+		let newSearchBlock[nextBlock] = -1;
+		
+		return (newSearchBlock + 2);
+
+	}
+
+	else {
+		let previousBlock = block;
+		return Memory.search(block[nextBlock], sizePlusTwo);
+
+	}
+
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) { 
+	var Array block;
+        let block = o - 2;
+        let block[nextBlock] = freeList;
+        let freeList = block;
+
+	
+	return;
+    }    
+}
